@@ -5,6 +5,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -15,9 +17,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
-public class TravelActivity extends FragmentActivity implements OnMapReadyCallback {
+public class TravelActivity extends FragmentActivity implements OnMapReadyCallback, View.OnClickListener {
 
     private GoogleMap mMap;
+
+    ImageButton travelMaptype;
 
     String[] latString;
     String[] lngString;
@@ -26,6 +30,9 @@ public class TravelActivity extends FragmentActivity implements OnMapReadyCallba
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_travel);
+
+        travelMaptype = (ImageButton)findViewById(R.id.travelMapType);
+        travelMaptype.setOnClickListener(this);
 
         Bundle bundle = getIntent().getExtras();
         String date = bundle.getString("date");
@@ -50,12 +57,12 @@ public class TravelActivity extends FragmentActivity implements OnMapReadyCallba
                 startPosition = new LatLng(Double.valueOf(lat[i]), Double.valueOf(lng[i]));
             }
             endPosition = new LatLng(Double.valueOf(lat[i]), Double.valueOf(lng[i]));
-            Drawer.drawLineFragment(startPosition, endPosition, mMap);
-            Drawer.addMarker(endPosition, mMap);
+            Tuner.drawLineFragment(startPosition, endPosition, mMap);
+            Tuner.addMarker(endPosition, mMap);
             startPosition = endPosition;
         }
 
-        Drawer.changeCameraPosition(endPosition, mMap);
+        Tuner.changeCameraPosition(endPosition, mMap);
     }
 
 
@@ -71,5 +78,16 @@ public class TravelActivity extends FragmentActivity implements OnMapReadyCallba
         }
 
         drawMotions(latString, lngString);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch(view.getId()){
+            case R.id.travelMapType:
+                Tuner.showMapTypeSelectorDialog(mMap, this);
+                break;
+            default:
+                break;
+        }
     }
 }

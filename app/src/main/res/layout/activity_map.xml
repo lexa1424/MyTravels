@@ -33,5 +33,17 @@
         android:clickable="true"
         android:id="@+id/stopButton"
         android:layout_marginBottom="@dimen/activity_vertical_margin"/>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/mapType"
+        android:src="@drawable/map"
+        android:background="@color/map_type_btn_background"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="@dimen/map_type_btn_margin"
+        android:layout_marginStart="@dimen/map_type_btn_margin"
+        android:padding="@dimen/map_type_btn_padding"/>
 </RelativeLayout>
 

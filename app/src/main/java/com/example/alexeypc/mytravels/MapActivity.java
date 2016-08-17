@@ -1,6 +1,7 @@
 package com.example.alexeypc.mytravels;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -11,11 +12,13 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,10 +42,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class MapActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+public class MapActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, View.OnClickListener{
 
     TextView textView;
     FloatingActionButton stopButton;
+    ImageButton mapType;
 
     private GoogleMap mMap;
 
@@ -88,13 +92,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     private void init(){
         textView = (TextView)findViewById(R.id.textView);
         stopButton = (FloatingActionButton)findViewById(R.id.stopButton);
-        stopButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                saveCoordinates();
-                MainActivity.start(MapActivity.this);
-            }
-        });
+        mapType = (ImageButton)findViewById(R.id.mapType);
+        stopButton.setOnClickListener(this);
+        mapType.setOnClickListener(this);
         latitude = new ArrayList<>();
         longitude = new ArrayList<>();
         startPosition = null;
@@ -182,9 +182,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
         endPosition = new LatLng(location.getLatitude(), location.getLongitude());
 
-        Drawer.addMarker(endPosition, mMap);
-        Drawer.drawLineFragment(startPosition, endPosition, mMap);
-        Drawer.changeCameraPosition(endPosition, mMap);
+        Tuner.addMarker(endPosition, mMap);
+        Tuner.drawLineFragment(startPosition, endPosition, mMap);
+        Tuner.changeCameraPosition(endPosition, mMap);
 
         latitude.add(location.getLatitude());
         longitude.add(location.getLongitude());
@@ -197,5 +197,21 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         SimpleDateFormat mdformat = new SimpleDateFormat("yyyy / MM / dd   HH:mm");
         String strDate = mdformat.format(calendar.getTime());
         return strDate;
+    }
+
+
+    @Override
+    public void onClick(View view) {
+        switch(view.getId()){
+            case R.id.stopButton:
+                saveCoordinates();
+                MainActivity.start(MapActivity.this);
+                break;
+            case R.id.mapType:
+                Tuner.showMapTypeSelectorDialog(mMap, this);
+                break;
+            default:
+                break;
+        }
     }
 }
